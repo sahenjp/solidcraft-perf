@@ -4,7 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <title>SolidCraft</title>
-  <link data-trunk rel="rust" data-bin="solvecraft-web" data-wasm-opt="z" data-weak-refs />
+  <!-- data-wasm-opt is 0 (no wasm-opt pass): the binaryen trunk bundles rejects the
+       saturating float-to-int conversions the current Rust toolchain emits
+       ("all used features should be allowed" on i32.trunc_sat_f32_u). Shipping an
+       unoptimised wasm beats shipping no browser build; bump trunk/binaryen and put the
+       optimisation back once its validator accepts them. -->
+  <link data-trunk rel="rust" data-bin="solvecraft-web" data-wasm-opt="0" data-weak-refs />
   <style>
     html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #e8ebf0; }
     #solvecraft_canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
