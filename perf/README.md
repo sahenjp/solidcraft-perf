@@ -68,11 +68,13 @@ bytes. An untouched body must also stay the very same body, which is what
 
 ## Large-CAD fixtures
 
-The generated STEP files are 60 MB together and are not committed. Regenerate them from the
-designs with the CLI:
+The generated STEP files are 60 MB together and are not committed, and they are written
+outside the checkout so the asset gate never sees them ($PERF_CACHE/fixtures, default
+~/.cache/solidcraft-perf/fixtures). Regenerate them from the designs with the CLI:
 
 ```
-python3 perf/gen_step_fixtures.py      # writes perf/fixtures/*.step
+python3 perf/gen_step_fixtures.py                 # -> ~/.cache/solidcraft-perf/fixtures
+perf/identity.sh <baseline-cli> <candidate-cli> ~/.cache/solidcraft-perf/fixtures/*.step
 ```
 
 ## Where a session's heap goes
@@ -92,9 +94,15 @@ in `docs/performance-optimization.md`.
 
 ## Results and reports
 
-- `perf/results/bench.csv` - raw `perf/bench.sh` output, one row per run
-- `perf/results/bench.md` - the table `perf/summarize.py` produced from it
-- `perf/results/equivalence.txt` - the corpus comparison
+- `perf/results/summary.md` - the tables, the equivalence check and the identity check in one
+  place
+- `perf/results/bench.csv` - raw `perf/bench.sh` output, one row per run; `bench.md` is the
+  table `perf/summarize.py` produced from it
+- `perf/results/bench-code-only.csv` and `bench-profile.csv` - the same measurement with the
+  code change isolated (one profile, two sources) and the profile isolated (one source, two
+  profiles)
+- `perf/results/equivalence.txt` - the corpus comparison (`perf/corpus.sh` + `cmp_all.py`)
+- `perf/results/identity.txt` - the evaluation and STEP round-trip check (`perf/identity.sh`)
 - `perf/reports/step-import.md`, `perf/reports/release-profile.md` - the two focused
   measurement records, kept as they were written (their paths point at the scratch directory
   the runs used)
