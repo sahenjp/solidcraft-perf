@@ -1,0 +1,97 @@
+{
+  "commands": [
+    {
+      "command": "solid.box",
+      "params": {
+        "body_name": "Enclosure",
+        "height": 30,
+        "length": 80,
+        "width": 50
+      }
+    },
+    {
+      "command": "solid.shell",
+      "params": {
+        "faces": [
+          [
+            40,
+            25,
+            30
+          ]
+        ],
+        "thickness": 2
+      }
+    },
+    {
+      "command": "plastic.lip",
+      "params": {
+        "face": [
+          1,
+          25,
+          30
+        ],
+        "height": 2,
+        "width": 1
+      }
+    },
+    {
+      "command": "plastic.snap_fit",
+      "params": {
+        "catch_depth": 1,
+        "catch_length": 2,
+        "hook": [
+          0,
+          -1,
+          0
+        ],
+        "length": 14,
+        "position": [
+          40,
+          44,
+          2
+        ],
+        "thickness": 1.5,
+        "width": 6
+      }
+    },
+    {
+      "command": "plastic.boss",
+      "params": {
+        "diameter": 7,
+        "height": 12,
+        "hole_diameter": 2.5,
+        "position": [
+          10,
+          10,
+          2
+        ]
+      }
+    },
+    {
+      "command": "plastic.boss",
+      "params": {
+        "diameter": 7,
+        "height": 12,
+        "hole_diameter": 2.5,
+        "position": [
+          70,
+          40,
+          2
+        ]
+      }
+    },
+    {
+      "command": "plastic.rest",
+      "params": {
+        "height": 3,
+        "length": 24,
+        "position": [
+          40,
+          25,
+          2
+        ],
+        "width": 16
+      }
+    }
+  ]
+}

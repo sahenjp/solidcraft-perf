@@ -1,0 +1,88 @@
+{
+  "commands": [
+    {
+      "command": "sheet.manage_rules",
+      "params": {
+        "active": true,
+        "bend_radius": "Thickness",
+        "name": "Steel 2mm",
+        "thickness": "2 mm"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Base",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.rectangle.two_point",
+      "params": {
+        "p0": [
+          0,
+          0
+        ],
+        "p1": [
+          120,
+          60
+        ]
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "sheet.flange",
+      "params": {
+        "sketch": "Base"
+      }
+    },
+    {
+      "command": "sheet.flange",
+      "params": {
+        "edges": [
+          [
+            60,
+            0,
+            2
+          ],
+          [
+            60,
+            60,
+            2
+          ]
+        ],
+        "height": 30
+      }
+    },
+    {
+      "command": "sheet.flange",
+      "params": {
+        "angle": "60 deg",
+        "edges": [
+          [
+            120,
+            30,
+            2
+          ]
+        ],
+        "height": 20
+      }
+    },
+    {
+      "command": "sheet.hem",
+      "params": {
+        "edges": [
+          [
+            0,
+            30,
+            2
+          ]
+        ],
+        "length": 8
+      }
+    }
+  ]
+}
