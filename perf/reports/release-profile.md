@@ -4,7 +4,7 @@
 > live in `perf/designs`, `perf/fixtures` (generated), `perf/probe` and here.
 
 
-Repo: `/home/sahen/File/Prog/solvecraft` (SolidCraft 0.3.2, cargo/rustc 1.98.1, 16 logical cores,
+Repo: `~/File/Prog/solvecraft` (SolidCraft 0.3.2, cargo/rustc 1.98.1, 16 logical cores,
 32 GB RAM). No commit, no push; the only repository file touched is `Cargo.toml`.
 
 ## Verdict
@@ -31,8 +31,8 @@ as the last-resort guard against losing a user's design, so panics must keep unw
 
 | | |
 |---|---|
-| Source | frozen snapshot `/home/sahen/scperf-src-frozen`, build-input hash `c38f9f416ca743dd`, verified equal before and after every build |
-| Target dir | `CARGO_TARGET_DIR=/home/sahen/scperf-target-profile` (private, outside the repo; the shared repo `target/` was used only for the first pre-redirect pass and was not touched afterwards) |
+| Source | frozen snapshot `~/scperf-src-frozen`, build-input hash `c38f9f416ca743dd`, verified equal before and after every build |
+| Target dir | `CARGO_TARGET_DIR=~/scperf-target-profile` (private, outside the repo; the shared repo `target/` was used only for the first pre-redirect pass and was not touched afterwards) |
 | Build | `CARGO_BUILD_JOBS=8 cargo build --release -p solvecraft-cli -p solvecraft` |
 | Eval | `solvecraft-cli eval <design> --quiet`, GNU `time -v` (wall + peak RSS), interleaved run order, median of 3 |
 | Cold start | `solvecraft-cli eval /tmp/scperf/designs/empty.json --quiet`, 15 interleaved runs, median |
@@ -94,8 +94,8 @@ of the landed fat+strip profile.
 
 ```sh
 # variant builds (from the frozen snapshot, private target dir)
-cd /home/sahen/scperf-src-frozen
-export CARGO_TARGET_DIR=/home/sahen/scperf-target-profile CARGO_BUILD_JOBS=8
+cd ~/scperf-src-frozen
+export CARGO_TARGET_DIR=~/scperf-target-profile CARGO_BUILD_JOBS=8
 cargo build --release -p solvecraft-cli -p solvecraft                                   # P0
 CARGO_PROFILE_RELEASE_STRIP=symbols cargo build --release -p solvecraft-cli -p solvecraft  # P3
 CARGO_PROFILE_RELEASE_LTO=fat CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1 \
@@ -109,10 +109,10 @@ python3 /tmp/scperf/tune/reversed.py       # 4 reps x (P2 then P0), holes_100 + 
 python3 /tmp/scperf/tune/cold.py           # 15 interleaved empty-design runs per variant
 
 # verification of the landed manifest (no env overrides; 0 crates recompiled, sizes identical)
-cp /home/sahen/File/Prog/solvecraft/Cargo.toml /home/sahen/scperf-src-frozen/Cargo.toml
-cd /home/sahen/scperf-src-frozen && CARGO_TARGET_DIR=/home/sahen/scperf-target-profile \
+cp ~/File/Prog/solvecraft/Cargo.toml ~/scperf-src-frozen/Cargo.toml
+cd ~/scperf-src-frozen && CARGO_TARGET_DIR=~/scperf-target-profile \
   cargo build --release -p solvecraft-cli -p solvecraft     # "Finished in 0.50s", 0 Compiling lines
-stat -c '%s %n' /home/sahen/scperf-target-profile/release/solvecraft{,-cli}
+stat -c '%s %n' ~/scperf-target-profile/release/solvecraft{,-cli}
 #   38099720 solvecraft  17721120 solvecraft-cli   <- byte-identical to the measured P2 binaries
 
 # repository checks
