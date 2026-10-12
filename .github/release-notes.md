@@ -1,3 +1,11 @@
+> **Personal fork build, not the upstream 0.3.2 release.** This repository is
+> [sahenjp/solidcraft-perf](https://github.com/sahenjp/solidcraft-perf): upstream SolidCraft `0.3.2`
+> plus a measured performance and memory pass - 4.1x on a 100-hole cut, 3.2x on the sample vent
+> plate, 29-35% smaller release binaries, three redundant copies removed from the STEP reader -
+> and a complete Japanese interface. The measurements, the harness that reproduces them and the
+> open limitations are in the [README](https://github.com/sahenjp/solidcraft-perf#readme) and
+> `perf/`. Upstream development happens at
+> [bherbruck/solidcraft](https://github.com/bherbruck/solidcraft).
 SolidCraft is open-source parametric 3D CAD in Rust: sketch, constrain, extrude, and change a
 parameter to watch the timeline rebuild. [Documentation](https://bherbruck.github.io/solidcraft/)
 · [try it in the browser](https://bherbruck.github.io/solidcraft/app/) ·
