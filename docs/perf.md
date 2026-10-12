@@ -249,10 +249,11 @@ change removes repeated triangulation, not retained data.
 
 The evaluation output is unchanged - same bodies, names, face/edge/vertex counts, bounds,
 volumes, areas, centroids, masses and per-feature errors - across the six bundled samples, the
-example designs and the generated corpus. Two designs differ only in the last bits: the 100-hole
-plate by 1.3e-10 relative on volume and area and 2e-8 mm on its centre of mass, and
-`shallow_loft_cut_from_top_face` by 3.8e-16 relative. The plate's bounding-box minimum, which
-the baseline reported as -3.5e-15, is now exactly 0, its bottom face plane.
+example designs and the generated corpus. Four designs differ only in the last bits, and the
+worst is the 400-hole plate at 5.1e-9 relative on its area (1.8e-3 mm2 of 352,225 mm2) and 6.7e-9
+mm on its centre of mass. The 100-hole plate moves by 1.3e-10 relative on volume and area, both
+plates' bounding-box minimum, which the baseline reported as -3.5e-15, is now exactly 0, their
+bottom face plane, and `shallow_loft_cut_from_top_face` moves by 3.8e-16.
 
 A pair the route answers is accepted only when its volume agrees with the operand volumes the way
 the sampled path's would, and only when the result is not a look-alike rebuild of an operand. A

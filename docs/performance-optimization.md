@@ -6,7 +6,8 @@ memory first, then less idle CPU and less work on large designs, without changin
 file formats, the UI or the command set.
 
 Repository revision under test: `07e263d` ("Prepare SolidCraft 0.3.2 patch release"), branch
-`main`. See [docs/perf.md](perf.md) for the earlier performance log this continues.
+`main`. See [docs/perf.md](perf.md) for the earlier performance log this continues, and
+[perf/README.md](../perf/README.md) for the harness that reproduces every number below.
 
 ## Measurement setup
 
@@ -342,10 +343,11 @@ Geometry equivalence was checked the way the kernel tests cannot: `solvecraft-cl
 for a 17-design corpus (the six bundled samples, the acceptance and regression examples, and the
 generated designs) from the baseline binary against the finished one. Every design has the same
 bodies with the same names, face/edge/vertex/shell counts and per-feature errors; nothing
-structural differs. Two designs differ in the last bits only: `holes_100` by 1.3e-10 relative
-on volume and area and 2e-8 mm on its centre of mass, `shallow_loft_cut_from_top_face` by
-3.8e-16 relative. `holes_100`'s bounding-box minimum, -3.5e-15 in the baseline, is now exactly
-0 - its bottom face plane. The identity property the engine test checks is also asserted
+structural differs. Four designs differ in the last bits only, and the worst is `holes_400`: 5.1e-9
+relative on its area (1.8e-3 mm2 of 352,225 mm2) and 6.7e-9 mm on its centre of mass. `holes_100`
+moves by 1.3e-10 relative on volume and area, both plates' bounding-box minimum, -3.5e-15 in the
+baseline, is now exactly 0 - their bottom face plane - and `shallow_loft_cut_from_top_face` moves
+by 3.8e-16. The identity property the engine test checks is also asserted
 directly in `ops::prism_fast_path_tests`.
 
 ## Remaining problems

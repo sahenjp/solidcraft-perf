@@ -6,6 +6,58 @@ Sketch, constrain, and build solids with a parametric feature timeline. Change a
 and watch your model rebuild. Run it on your desktop, in your browser, or let AI agents
 model through the built-in MCP server. Part of the storytold "craft" family.
 
+---
+
+**This is a personal fork.** It is SolidCraft `07e263d` plus a measured performance and memory
+pass. Nothing here is planned as a pull request; the app is developed upstream at
+[bherbruck/solidcraft](https://github.com/bherbruck/solidcraft). The changes, the measurements
+behind them and the harness that reproduces them live in [perf/](perf/README.md) and
+[docs/performance-optimization.md](docs/performance-optimization.md).
+
+### What it changes
+
+Speed and memory, without touching geometry, file formats, the command set or the interface:
+whole-solid triangulations the kernel did not need (a cut or an intersection of prism pairs is
+decided exactly in 2D, placed copies take their orientation from the placement matrix, a body
+remembers its bounding-box diagonal), a byte budget for the evaluation cache, three redundant
+copies in the STEP reader, a smaller release profile, and a complete Japanese translation with
+font loading on demand.
+
+### Measured (median of five runs, one process per run, nothing else on the machine)
+
+| Design | Upstream `07e263d` | This branch | Ratio | Peak RSS |
+|---|---:|---:|---:|---:|
+| 100 holes cut into one plate | 16.78 s | 4.09 s | **4.1x** | 121 MB → 114 MB |
+| vent plate sample | 0.16 s | 0.05 s | **3.2x** | 19 MB → 15 MB |
+| vent plate, 80-cut pattern | 0.83 s | 0.36 s | **2.3x** | 21 MB → 18 MB |
+| bolted flange sample | 2.02 s | 1.89 s | 1.07x | 153 MB → 152 MB |
+| 196-copy body pattern | 6.36 s | 6.10 s | 1.04x | 62 MB → 60 MB |
+| 121-feature join chain | 7.98 s | 7.80 s | 1.02x | 193 MB → 188 MB |
+
+Medians of five runs, one process each; the ranges, the CPU times and the raw output are in
+[perf/results](perf/results). Built with the same profile, the code changes alone are 4.2x on
+the 100-hole plate and 2.4x on the vent pattern; the release profile adds a few percent of run
+time and 3-5 MB less peak RSS, and a third of the binary size.
+
+Raw output, the code-only and profile-only tables, the corpus equivalence check and the
+byte-identical STEP round trips are all in [perf/results](perf/results).
+
+### Reproduce
+
+```
+cargo build --release -p solvecraft-cli
+perf/build-baseline.sh 07e263d              # the untouched baseline, in ~/.cache
+perf/bench.sh <baseline-cli> target/release/solvecraft-cli 5 | tee perf/results/bench.csv
+python3 perf/summarize.py perf/results/bench.csv
+```
+
+### Status
+
+`cargo xtask ci` passes on the committed revision (26 test binaries, including 209 kernel
+tests); its only failure is the `cargo xtask wasm` check, because the `wasm32-unknown-unknown`
+target is not installed on the machine that produced these numbers and installing it needs root.
+
+---
 ![SolidCraft: draw a rounded electronics enclosure, sketch its USB port directly on a face, add four mounting bosses and resize it through Parameters](docs/screenshots/enclosure-demo-0.2.1.gif)
 
 *Start with an empty design and draw the original parametric electronics enclosure in the English desktop UI: rounded corners, a shell, a USB port sketched directly on the wall and a four-boss pattern. Change width from 80 → 100 mm and wall thickness from 2 → 3 mm in Parameters and watch it rebuild. Original animated pointer and click cues; 4× playback. [Full video](https://github.com/bherbruck/solidcraft/raw/refs/heads/main/docs/screenshots/enclosure-demo-0.2.1.mp4), generated with the [demo script](examples/demo/record_ui.sh).*
