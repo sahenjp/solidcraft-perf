@@ -2,11 +2,11 @@
 
 This directory holds the measurement harness and the raw results behind the numbers in the
 project README and `docs/performance-optimization.md`. Everything here runs against the
-`solvecraft-cli` built from this checkout; no measurement code is part of the application.
+`solidcraft-cli` built from this checkout; no measurement code is part of the application.
 
 ## The rules the numbers depend on
 
-- One process per measurement (`solvecraft-cli eval <design> --quiet`), so nothing is warm.
+- One process per measurement (`solidcraft-cli eval <design> --quiet`), so nothing is warm.
 - Nothing else may build, test or benchmark at the same time. cargo on any core moves both the
   wall time and the peak RSS; `perf/bench.sh` refuses to start while cargo is running.
 - Runs alternate A/B, so machine drift hits both binaries equally.
@@ -20,8 +20,8 @@ project README and `docs/performance-optimization.md`. Everything here runs agai
 ## Build the two binaries
 
 ```
-cargo build --release -p solvecraft-cli          # the candidate: this branch
-perf/build-baseline.sh 07e263d                   # the untouched baseline; prints its path
+cargo build --release -p solidcraft-cli          # the candidate: this branch
+perf/build-baseline.sh 626fe6f                   # the untouched baseline; prints its path
 ```
 
 `perf/build-baseline.sh` keeps a git worktree and its target directory under
@@ -38,7 +38,7 @@ The default designs are `perf/designs/{medium,holes_100,pattern_196,many_sketche
 Further design paths go after the run count, for example:
 
 ```
-perf/bench.sh "$BASE" target/release/solvecraft-cli 5 perf/designs/samples/*.json
+perf/bench.sh "$BASE" target/release/solidcraft-cli 5 perf/designs/samples/*.json
 ```
 
 ## Output equivalence
@@ -94,6 +94,11 @@ in `docs/performance-optimization.md`.
 
 ## Results and reports
 
+The results committed under `perf/results` are the 0.3.2-era pass that became upstream PR #714;
+they are kept as they were measured, so the commands and crate names inside them are the ones
+that ran then. The baseline this branch now measures against is the 0.10.0 release (626fe6f,
+`upstream/main`); a new run repeats the checks above with `solidcraft-cli`.
+
 - `perf/results/summary.md` - the tables, the equivalence check and the identity check in one
   place
 - `perf/results/bench.csv` - raw `perf/bench.sh` output, one row per run; `bench.md` is the
@@ -103,9 +108,12 @@ in `docs/performance-optimization.md`.
   profiles)
 - `perf/results/equivalence.txt` - the corpus comparison (`perf/corpus.sh` + `cmp_all.py`)
 - `perf/results/identity.txt` - the evaluation and STEP round-trip check (`perf/identity.sh`)
+- `perf/results/bench-0.10.0.csv` and `bench-0.10.0.md` - the 0.10.0 profile comparison (8
+  alternating runs per design, run while an unrelated project was building; the ranges show it)
 - `perf/reports/step-import.md`, `perf/reports/release-profile.md` - the two focused
   measurement records, kept as they were written (their paths point at the scratch directory
-  the runs used)
+  the runs used); `release-profile.md` opens with the 0.10.0 pass and keeps the 0.3.2-era
+  record below it
 
 ## What is not measured here
 

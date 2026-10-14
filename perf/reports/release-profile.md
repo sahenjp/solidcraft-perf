@@ -1,4 +1,83 @@
-# Release profile tuning — measurement report (task-2, 2026-10-12)
+# Release profile — 0.10.0 measurement report (task-4, 2026-10-14)
+
+The same measurement run on the 0.10.0 tree (`626fe6f` plus the staged `perf/` port). It
+compares two binaries of the same commit that differ only in the release profile, which is the
+pair `perf/README.md` describes; the 0.3.2-era record follows unchanged below the divider.
+
+## Verdict
+
+The profile this branch carries (fat LTO, one codegen unit, stripped symbols) is **-86.7% in
+binary size**: 23,312,640 bytes against 174,939,864 bytes for the upstream profile, both built
+from `626fe6f`. Peak RSS is lower on every design (-4% to -19%). Wall time is **directional
+only**: the box was shared with an unrelated project's `cargo test` and acceptance runs for the
+whole pass (1-minute load average 13-35 on 16 cores), so the ranges are wider than the
+differences; the two designs whose medians differ most (`pattern_196` 1.46 s vs 1.55 s,
+`holes_100` 0.80 s vs 0.82 s) still overlap almost completely, and `many_sketches_60` reads 2%
+the other way. The direction matches the 0.3.2 pass (never slower, 2-6% faster); this pass on
+its own does not prove it.
+
+## Method
+
+| | |
+|---|---|
+| Source | this worktree, `626fe6f` plus the staged `perf/`; cargo/rustc 1.98.1, 16 logical cores |
+| Baseline | `626fe6f` with the upstream profile: `lto = "thin"`, `codegen-units = 16`, `debug = "line-tables-only"` |
+| Candidate | the same commit with this branch's profile: `lto = "fat"`, `codegen-units = 1`, `strip = "symbols"` |
+| Eval | `/usr/bin/time -v <binary> eval <design> --quiet`, one process per measurement, alternating A/B, 8 runs per design, median with the observed range |
+| Designs | `perf/designs/{medium,holes_100,pattern_196,many_sketches_60}.json` |
+| Contention | unrelated `cargo test --workspace` (project newime/nagi) throughout; `PERF_ALLOW_LOAD=1` bypassed `perf/bench.sh`'s quiet gate deliberately, so the wall times are contended by construction |
+
+### Size (exact)
+
+| binary | profile | bytes | MiB | vs upstream |
+|---|---|---:|---:|---:|
+| `/tmp/sc010-upstream` | thin, 16 CGU, line-tables-only debug | 174,939,864 | 166.8 | — |
+| `/tmp/sc010-personal` | fat, 1 CGU, strip=symbols | 23,312,640 | 22.2 | -86.7% |
+
+### Run time and peak RSS, 8 alternating runs per design, contended
+
+| Design | Runs | Before (median, range) | After (median, range) | Ratio | Peak RSS before | Peak RSS after |
+|---|---:|---:|---:|---:|---:|---:|
+| holes_100 | 8 | 0.82 s (0.80-0.93) | 0.80 s (0.76-0.91) | 1.03x | 121.6 MB | 116.5 MB |
+| many_sketches_60 | 8 | 9.96 s (8.87-17.82) | 10.12 s (9.01-15.57) | 0.98x | 225.2 MB | 220.1 MB |
+| medium | 8 | 0.08 s (0.07-0.09) | 0.08 s (0.07-0.08) | 1.00x | 23.8 MB | 19.2 MB |
+| pattern_196 | 8 | 1.55 s (1.34-2.23) | 1.46 s (1.26-2.06) | 1.07x | 155.6 MB | 150.1 MB |
+
+`before` is the upstream-profile baseline and `after` this branch's profile; the ratio is
+before/after, so above 1.00x means the candidate was faster in the median. `medium` is process
+startup (0.08 s). Raw rows: `perf/results/bench-0.10.0.csv`; the table above is what
+`perf/summarize.py` printed (`perf/results/bench-0.10.0.md`).
+
+### Harness verification in the same pass
+
+```sh
+perf/corpus.sh /tmp/sc010-personal /tmp/harness-check perf/designs/medium.json \
+  perf/designs/pattern_64.json perf/designs/samples/Vent_Plate.json
+# -> medium, pattern_64, sample_Vent_Plate; every .err file empty (the sample_ prefix branch)
+perf/corpus.sh /tmp/sc010-upstream /tmp/harness-check-before perf/designs/medium.json \
+  perf/designs/pattern_64.json perf/designs/samples/Vent_Plate.json
+python3 perf/cmp_all.py /tmp/harness-check-before /tmp/harness-check
+# -> IDENTICAL x3, worst float difference 0.00e+00, "no structural differences"
+perf/identity.sh /tmp/sc010-personal /tmp/sc010-personal perf/designs/medium.json \
+  perf/designs/samples/Sample_Plate.json
+# -> eval identical: medium.json, Sample_Plate.json (worst relative 0.0e+00); exit 0
+perf/identity.sh /tmp/sc010-personal /tmp/sc010-personal \
+  ~/.cache/solidcraft-perf/fixtures/grid_16x16_boxes.step perf/designs/medium.json
+# -> eval identical x2; round-trip bytes identical: grid_16x16_boxes.step (963663 bytes); exit 0
+```
+
+### Exact benchmark commands
+
+```sh
+PERF_ALLOW_LOAD=1 perf/bench.sh /tmp/sc010-upstream /tmp/sc010-personal 8 \
+  perf/designs/medium.json perf/designs/holes_100.json perf/designs/pattern_196.json \
+  perf/designs/many_sketches_60.json > perf/results/bench-0.10.0.csv
+python3 perf/summarize.py perf/results/bench-0.10.0.csv | tee perf/results/bench-0.10.0.md
+stat -c '%s %n' /tmp/sc010-upstream /tmp/sc010-personal
+```
+
+---
+# Release profile tuning — measurement report (task-2, 2026-10-12, 0.3.2-era pass)
 > Kept as written when the measurement ran: the paths in it point at the scratch
 > directory those runs used (`/tmp/scperf/...`). In this checkout the same assets
 > live in `perf/designs`, `perf/fixtures` (generated), `perf/probe` and here.

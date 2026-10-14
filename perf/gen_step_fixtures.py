@@ -5,8 +5,8 @@ The designs they are exported from are committed under perf/designs; the STEP fi
 together) are not, and they are written outside the checkout (the asset gate only wants
 committed assets), so run this once before perf/identity.sh or an import benchmark:
 
-    cargo build --release -p solvecraft-cli
-    python3 perf/gen_step_fixtures.py [path-to-solvecraft-cli] [output-directory]
+    cargo build --release -p solidcraft-cli
+    python3 perf/gen_step_fixtures.py [path-to-solidcraft-cli] [output-directory]
 
 The default output directory is $PERF_CACHE/fixtures (~/.cache/solidcraft-perf/fixtures).
 One CLI run per fixture; the sizes are what the tables in perf/reports quote.
@@ -32,9 +32,9 @@ EXPORTS = [
 
 
 def main():
-    cli = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "target", "release", "solvecraft-cli")
+    cli = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "target", "release", "solidcraft-cli")
     if not os.path.exists(cli):
-        print("build it first: cargo build --release -p solvecraft-cli  (looked for %s)" % cli)
+        print("build it first: cargo build --release -p solidcraft-cli  (looked for %s)" % cli)
         return 2
     out = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_OUT
     os.makedirs(out, exist_ok=True)

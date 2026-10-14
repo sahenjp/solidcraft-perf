@@ -7,3 +7,8 @@
 /.claude/worktrees/
 /target-snapshot
 __pycache__/
+
+# Measurement scratch (perf/README.md)
+perf/probe/target/
+perf/fixtures/
+perf/results/corpus-*

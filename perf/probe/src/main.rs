@@ -68,7 +68,7 @@ fn mark(label: &str) {
     }
 }
 
-fn report(session: &solvecraft_engine::Session, label: &str) {
+fn report(session: &solidcraft_engine::Session, label: &str) {
     let (mut bodies, mut sketches, mut states, mut n) = (0usize, 0usize, 0usize, 0usize);
     let (mut sheets, mut threads, mut construct) = (0usize, 0usize, 0usize);
     for r in &session.model.results {
@@ -79,13 +79,14 @@ fn report(session: &solvecraft_engine::Session, label: &str) {
         n += 1;
         states += st.retained_bytes();
         bodies += st.bodies.iter().map(|b| b.body.retained_bytes()).sum::<usize>();
-        sketches += st.sketches.iter().map(solvecraft_doc::SolvedSketch::retained_bytes).sum::<usize>();
+        // 0.10.0 keeps a snapshot's sketches behind Arc, so the method needs a deref through it.
+        sketches += st.sketches.iter().map(|s| solidcraft_doc::SolvedSketch::retained_bytes(s)).sum::<usize>();
         sheets += st.sheets.len();
         threads += st.threads.len();
         construct += st.construct.len();
     }
     let last = session.model.state();
-    let last_sketches: usize = last.sketches.iter().map(solvecraft_doc::SolvedSketch::retained_bytes).sum();
+    let last_sketches: usize = last.sketches.iter().map(|s| solidcraft_doc::SolvedSketch::retained_bytes(s)).sum();
     println!(
         "REPORT {label}: states={n} sum_retained={:.1}MB bodies={:.1}MB sketches={:.1}MB sheets={sheets} threads={threads} construct={construct} | last retained={:.1}MB bodies={} last_sketch_bytes={:.1}MB",
         states as f64 / 1048576.0,
@@ -111,14 +112,14 @@ fn main() {
     if args.iter().any(|a| a == "--dump-samples") {
         let dir = std::path::Path::new("perf/designs/samples");
         let _ = std::fs::create_dir_all(dir);
-        for s in solvecraft_engine::sample::samples() {
+        for s in solidcraft_engine::sample::samples() {
             let path = dir.join(format!("{}.json", s.name.replace(' ', "_")));
             std::fs::write(&path, serde_json::to_string_pretty(&(s.script)()).expect("json")).expect("write");
             println!("SAMPLE {} -> {}", s.name, path.display());
         }
     }
     mark("start");
-    let mut session = Some(solvecraft_engine::Session::default());
+    let mut session = Some(solidcraft_engine::Session::default());
     if no_cache {
         if let Some(s) = session.as_mut() {
             s.model.no_cache = true;
@@ -143,7 +144,7 @@ fn main() {
                 if Some(i) == last {
                     continue;
                 }
-                r.state = std::sync::Arc::new(solvecraft_doc::ModelState::default());
+                r.state = std::sync::Arc::new(solidcraft_doc::ModelState::default());
             }
         }
         mark("dropped-result-states");
@@ -176,14 +177,14 @@ fn main() {
             s.redo.clear();
             s.clipboard.clear();
             mark("d-undo-clipboard");
-            let fresh = solvecraft_doc::Model::new();
+            let fresh = solidcraft_doc::Model::new();
             s.model.cache = fresh.cache;
             mark("d-cache");
             s.model.results.clear();
             mark("d-results");
-            s.model = solvecraft_doc::Model::new();
+            s.model = solidcraft_doc::Model::new();
             mark("d-model");
-            s.doc = std::sync::Arc::new(solvecraft_doc::Document::new("empty"));
+            s.doc = std::sync::Arc::new(solidcraft_doc::Document::new("empty"));
             mark("d-doc");
         }
         session = None;
@@ -230,10 +231,10 @@ fn main() {
         if let Some(s) = session.as_mut() {
             for r in s.model.results.iter_mut() {
                 let mut st = (*r.state).clone();
-                let fresh: Vec<solvecraft_doc::ModelBody> = st
+                let fresh: Vec<solidcraft_doc::ModelBody> = st
                     .bodies
                     .iter()
-                    .map(|b| solvecraft_doc::ModelBody::new(b.name.clone(), b.body.clone(), b.feature))
+                    .map(|b| solidcraft_doc::ModelBody::new(b.name.clone(), b.body.clone(), b.feature))
                     .collect();
                 st.bodies = fresh;
                 r.state = std::sync::Arc::new(st);
@@ -243,7 +244,7 @@ fn main() {
     }
     if args.iter().any(|a| a == "--clear-cache") {
         if let Some(s) = session.as_mut() {
-            let fresh = solvecraft_doc::Model::new();
+            let fresh = solidcraft_doc::Model::new();
             s.model.cache = fresh.cache;
         }
     }
@@ -284,10 +285,10 @@ fn main() {
             for r in s.model.results.iter_mut() {
                 let st = std::sync::Arc::make_mut(&mut r.state);
                 // Rebuild each body with a fresh (unwarmed) mesh cell.
-                let fresh: Vec<solvecraft_doc::ModelBody> = st
+                let fresh: Vec<solidcraft_doc::ModelBody> = st
                     .bodies
                     .iter()
-                    .map(|b| solvecraft_doc::ModelBody::new(b.name.clone(), b.body.clone(), b.feature))
+                    .map(|b| solidcraft_doc::ModelBody::new(b.name.clone(), b.body.clone(), b.feature))
                     .collect();
                 st.bodies = fresh;
             }
@@ -301,7 +302,7 @@ fn main() {
     }
     if args.iter().any(|a| a == "--strip-doc") {
         if let Some(s) = session.as_mut() {
-            s.doc = std::sync::Arc::new(solvecraft_doc::Document::new("empty"));
+            s.doc = std::sync::Arc::new(solidcraft_doc::Document::new("empty"));
         }
     }
     if args.iter().any(|a| a == "--strip-sketches-only") {
@@ -356,7 +357,7 @@ fn main() {
     }
     if args.iter().any(|a| a == "--clear-cache-now") {
         if let Some(s) = session.as_mut() {
-            let fresh = solvecraft_doc::Model::new();
+            let fresh = solidcraft_doc::Model::new();
             s.model.cache = fresh.cache;
         }
         mark("cache-cleared");
@@ -400,7 +401,7 @@ fn main() {
         session = None;
         mark("dropped-session");
         if let Some(doc) = doc {
-            let mut m = solvecraft_doc::Model::new();
+            let mut m = solidcraft_doc::Model::new();
             m.evaluate(&doc);
             mark("reevaluated-post-drop");
             std::hint::black_box(&m);

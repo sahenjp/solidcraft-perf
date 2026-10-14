@@ -19,11 +19,11 @@ fn main() {
     println!("utf8           {:8.1} ms  {}", t.elapsed().as_secs_f64() * 1e3, rss());
 
     let t = Instant::now();
-    let n = solvecraft_engine::kernel::step_validate(&text);
+    let n = solidcraft_engine::kernel::step_validate(&text);
     println!("step_validate  {:8.1} ms  entities={:?}  {}", t.elapsed().as_secs_f64() * 1e3, n, rss());
 
     let t = Instant::now();
-    let imp = solvecraft_engine::kernel::step_import_shared(&text).expect("import");
+    let imp = solidcraft_engine::kernel::step_import_shared(&text).expect("import");
     println!("step_import    {:8.1} ms  bodies={}  {}", t.elapsed().as_secs_f64() * 1e3, imp.bodies.len(), rss());
 
     let faces: usize = imp.bodies.iter().map(|b| b.file_faces).sum();

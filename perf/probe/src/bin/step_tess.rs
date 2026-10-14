@@ -12,7 +12,7 @@ fn main() {
     let bytes = std::fs::read(&path).expect("read");
     let text = String::from_utf8_lossy(&bytes).into_owned();
     let t = Instant::now();
-    let imp = solvecraft_engine::kernel::step_import_shared(&text).expect("import");
+    let imp = solidcraft_engine::kernel::step_import_shared(&text).expect("import");
     println!("step_import    {:8.1} ms  bodies={}  {}", t.elapsed().as_secs_f64() * 1e3, imp.bodies.len(), rss());
 
     // Same tolerance Body::new uses internally: (span*0.01).clamp(1e-3, 1.0).

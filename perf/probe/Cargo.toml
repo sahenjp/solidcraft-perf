@@ -5,9 +5,18 @@ edition = "2021"
 description = "Scratch measurement probe: counting global allocator and scenario runner (not shipped)."
 
 [dependencies]
-solvecraft-engine = { path = "../../crates/engine" }
-solvecraft-doc = { path = "../../crates/doc" }
+solidcraft-engine = { path = "../../crates/engine" }
+solidcraft-doc = { path = "../../crates/doc" }
 serde_json = "1"
+
+# The app workspace patches these crates with the copies under vendor/ (SolidCraft fixes plus the
+# extra tessellation and boolean entry points the kernel calls). A detached crate does not inherit
+# that table, so repeat it here; without it the probe would build a different kernel than the app.
+[patch.crates-io]
+truck-shapeops = { path = "../../vendor/truck-shapeops" }
+truck-stepio = { path = "../../vendor/truck-stepio" }
+truck-meshalgo = { path = "../../vendor/truck-meshalgo" }
+matext4cgmath = { path = "../../vendor/matext4cgmath" }
 
 # Detached from the workspace: this crate is a measurement tool, not part of the app.
 [workspace]
