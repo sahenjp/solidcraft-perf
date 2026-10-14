@@ -19,7 +19,12 @@
   <meta name="twitter:description" content="Open-source parametric CAD built in Rust. Desktop, browser, and MCP for AI agents.">
   <meta name="twitter:image" content="https://bherbruck.github.io/solidcraft/og.png">
   <meta name="twitter:image:alt" content="SolidCraft: open-source parametric CAD built in Rust">
-  <link data-trunk rel="rust" data-bin="solidcraft-web" data-wasm-opt="z" data-weak-refs />
+  <!-- data-wasm-opt is 0 (no wasm-opt pass): the binaryen trunk bundles rejects the
+       saturating float-to-int conversions the current Rust toolchain emits
+       ("all used features should be allowed" on i32.trunc_sat_f32_u). Shipping an
+       unoptimised wasm beats shipping no browser build; bump trunk/binaryen and put the
+       optimisation back once its validator accepts them. -->
+  <link data-trunk rel="rust" data-bin="solidcraft-web" data-wasm-opt="0" data-weak-refs />
   <link data-trunk rel="copy-file" href="../../assets/fonts/biz-udp-gothic/BIZUDPGothic-Regular.ttf" data-target-path="fonts" />
   <link data-trunk rel="copy-file" href="../../assets/fonts/biz-udp-gothic/OFL.txt" data-target-path="fonts" />
   <link data-trunk rel="css" href="../../assets/styles/web/loading.css" />
