@@ -1,0 +1,119 @@
+{
+  "commands": [
+    {
+      "command": "parameters.change",
+      "params": {
+        "expression": "6",
+        "name": "cols",
+        "unit": ""
+      }
+    },
+    {
+      "command": "parameters.change",
+      "params": {
+        "expression": "3",
+        "name": "rows",
+        "unit": ""
+      }
+    },
+    {
+      "command": "parameters.change",
+      "params": {
+        "comment": "slot spacing",
+        "expression": "16 mm",
+        "name": "pitch"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "body_name": "Plate",
+        "height": 4,
+        "length": 120,
+        "width": 80
+      }
+    },
+    {
+      "command": "solid.fillet",
+      "params": {
+        "edges": [
+          [
+            0,
+            0,
+            2
+          ],
+          [
+            120,
+            0,
+            2
+          ],
+          [
+            120,
+            80,
+            2
+          ],
+          [
+            0,
+            80,
+            2
+          ]
+        ],
+        "radius": "8 mm"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Slot",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.rectangle.two_point",
+      "params": {
+        "p0": [
+          18,
+          12
+        ],
+        "p1": [
+          24,
+          26
+        ]
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "distance": 4,
+        "name": "Vent",
+        "operation": "cut"
+      }
+    },
+    {
+      "command": "solid.pattern.rectangular",
+      "params": {
+        "count1": "cols",
+        "count2": "rows",
+        "dir1": [
+          1,
+          0,
+          0
+        ],
+        "dir2": [
+          0,
+          1,
+          0
+        ],
+        "features": [
+          "Vent"
+        ],
+        "spacing1": "pitch",
+        "spacing2": "22 mm"
+      }
+    }
+  ]
+}

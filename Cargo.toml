@@ -98,11 +98,13 @@ opt-level = 2
 
 [profile.release]
 opt-level = 3
-lto = "thin"
-codegen-units = 16
-# Line tables only: crash reports name file:line in their backtraces (no runtime cost; a larger
-# binary). See docs/crash-reports.md.
-debug = "line-tables-only"
+# Personal fork: fat LTO, one codegen unit and stripped symbols. Upstream keeps debug
+# information so crash reports name file:line (docs/crash-reports.md); dropping it takes the
+# CLI from 166.8 MiB to 22.2 MiB, measured on this tree (docs/performance-optimization.md).
+lto = "fat"
+codegen-units = 1
+debug = 0
+strip = "symbols"
 
 # truck-shapeops with SolidCraft fixes (Apache-2.0, see vendor/truck-shapeops and ATTRIBUTION.md).
 [patch.crates-io]

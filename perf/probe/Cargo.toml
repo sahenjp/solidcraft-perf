@@ -1,0 +1,19 @@
+[package]
+name = "scperf-probe"
+version = "0.0.0"
+edition = "2021"
+description = "Scratch measurement probe: counting global allocator and scenario runner (not shipped)."
+
+[dependencies]
+solvecraft-engine = { path = "../../crates/engine" }
+solvecraft-doc = { path = "../../crates/doc" }
+serde_json = "1"
+
+# Detached from the workspace: this crate is a measurement tool, not part of the app.
+[workspace]
+
+[profile.release]
+opt-level = 3
+lto = false
+codegen-units = 16
+debug = false

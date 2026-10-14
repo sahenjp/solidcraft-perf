@@ -1,0 +1,30 @@
+empty.json                         IDENTICAL
+grid_16x16_boxes.json              IDENTICAL
+grid_31x31_boxes.json              IDENTICAL
+grid_31x31_fillet.json             IDENTICAL
+grid_31x31_large.json              IDENTICAL
+grid_multi_2500.json               IDENTICAL
+grid_multi_2500_fillet.json        IDENTICAL
+holes_10.json                      IDENTICAL
+holes_100.json                     11 float diffs, max rel 1.0e+00
+holes_400.json                     11 float diffs, max rel 1.0e+00
+many_bodies_120.json               IDENTICAL
+many_bodies_40.json                IDENTICAL
+many_bodies_500.json               IDENTICAL
+many_sketches_30.json              IDENTICAL
+many_sketches_60.json              IDENTICAL
+medium.json                        IDENTICAL
+pattern_196.json                   IDENTICAL
+pattern_64.json                    IDENTICAL
+sample_Bolted_Flange.json          IDENTICAL
+sample_Hinge_Assembly.json         IDENTICAL
+sample_Plastic_Enclosure.json      IDENTICAL
+sample_Sample_Plate.json           IDENTICAL
+sample_Sheet_Metal_Bracket.json    IDENTICAL
+sample_Vent_Plate.json             IDENTICAL
+sketches_only_30.json              IDENTICAL
+sketches_only_60.json              IDENTICAL
+
+worst float difference: 1.00e+00 relative at holes_100.json.bodies[0].bbox.min[2]
+worst float difference: 1.81e-03 absolute at holes_400.json.total.area_mm2
+no structural differences

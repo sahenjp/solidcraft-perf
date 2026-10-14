@@ -1,0 +1,139 @@
+{
+  "commands": [
+    {
+      "command": "component.activate",
+      "params": {
+        "component": "root"
+      }
+    },
+    {
+      "command": "component.create",
+      "params": {
+        "name": "Leaf A"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "corner": [
+          0,
+          0,
+          0
+        ],
+        "height": 3,
+        "length": 40,
+        "width": 30
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "base": [
+          0,
+          33,
+          4
+        ],
+        "height": 40,
+        "operation": "new",
+        "radius": 4
+      }
+    },
+    {
+      "command": "component.activate",
+      "params": {
+        "component": "root"
+      }
+    },
+    {
+      "command": "component.create",
+      "params": {
+        "name": "Leaf B"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "corner": [
+          0,
+          0,
+          0
+        ],
+        "height": 3,
+        "length": 40,
+        "width": 30
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "base": [
+          0,
+          33,
+          4
+        ],
+        "height": 40,
+        "operation": "new",
+        "radius": 4
+      }
+    },
+    {
+      "command": "component.activate",
+      "params": {
+        "component": "root"
+      }
+    },
+    {
+      "command": "occurrence.ground",
+      "params": {
+        "grounded": true,
+        "occurrence": "Leaf A:1"
+      }
+    },
+    {
+      "command": "joint.create",
+      "params": {
+        "a": {
+          "circle": [
+            1,
+            37,
+            4
+          ],
+          "occurrence": "Leaf A:1"
+        },
+        "b": {
+          "circle": [
+            1,
+            37,
+            4
+          ],
+          "occurrence": "Leaf B:1"
+        },
+        "limits": [
+          [
+            "0 deg",
+            "180 deg"
+          ]
+        ],
+        "name": "Hinge",
+        "type": "revolute"
+      }
+    },
+    {
+      "command": "joint.drive",
+      "params": {
+        "joint": "Hinge",
+        "value": 60
+      }
+    }
+  ]
+}

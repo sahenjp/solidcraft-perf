@@ -1,0 +1,210 @@
+{
+  "commands": [
+    {
+      "command": "parameters.change",
+      "params": {
+        "comment": "plate width",
+        "expression": "80 mm",
+        "name": "width"
+      }
+    },
+    {
+      "command": "parameters.change",
+      "params": {
+        "expression": "50 mm",
+        "name": "depth"
+      }
+    },
+    {
+      "command": "parameters.change",
+      "params": {
+        "expression": "8 mm",
+        "name": "thickness"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Base",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.rectangle.two_point",
+      "params": {
+        "p0": [
+          0,
+          0
+        ],
+        "p1": [
+          80,
+          50
+        ]
+      }
+    },
+    {
+      "command": "sketch.constraint.coincident",
+      "params": {
+        "a": "p1",
+        "b": "origin"
+      }
+    },
+    {
+      "command": "sketch.dimension",
+      "params": {
+        "entities": [
+          "l1"
+        ],
+        "value": "width"
+      }
+    },
+    {
+      "command": "sketch.dimension",
+      "params": {
+        "entities": [
+          "l2"
+        ],
+        "value": "depth"
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "body_name": "Plate",
+        "distance": "thickness"
+      }
+    },
+    {
+      "command": "solid.fillet",
+      "params": {
+        "edges": [
+          [
+            0,
+            0,
+            4
+          ],
+          [
+            80,
+            0,
+            4
+          ],
+          [
+            80,
+            50,
+            4
+          ],
+          [
+            0,
+            50,
+            4
+          ]
+        ],
+        "radius": "6 mm"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Holes",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          12,
+          25
+        ],
+        "diameter": 8
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          68,
+          25
+        ],
+        "diameter": 8
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "distance": "thickness",
+        "name": "Holes",
+        "operation": "cut"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Boss",
+        "offset": "thickness",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          40,
+          25
+        ],
+        "diameter": 24
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "distance": 14,
+        "name": "Boss",
+        "operation": "join"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Bore",
+        "offset": "thickness + 14 mm",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          40,
+          25
+        ],
+        "diameter": 12
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "direction": "negative",
+        "distance": "thickness + 14 mm",
+        "name": "Bore",
+        "operation": "cut"
+      }
+    }
+  ]
+}

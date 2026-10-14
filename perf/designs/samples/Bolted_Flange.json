@@ -1,0 +1,153 @@
+{
+  "commands": [
+    {
+      "command": "parameters.change",
+      "params": {
+        "comment": "number of bolt holes",
+        "expression": "6",
+        "name": "bolts",
+        "unit": ""
+      }
+    },
+    {
+      "command": "parameters.change",
+      "params": {
+        "comment": "bolt circle diameter",
+        "expression": "70 mm",
+        "name": "pcd"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Disc",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          0,
+          0
+        ],
+        "diameter": 100
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "body_name": "Flange",
+        "distance": 10,
+        "name": "Disc"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Hub",
+        "plane": {
+          "face": [
+            0,
+            0,
+            10
+          ]
+        }
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          0,
+          0
+        ],
+        "diameter": 44
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "distance": 16,
+        "name": "Hub",
+        "operation": "join"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Bore",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          0,
+          0
+        ],
+        "diameter": 24
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "distance": 26,
+        "name": "Bore",
+        "operation": "cut"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Bolt",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          35,
+          0
+        ],
+        "diameter": 9
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "distance": 10,
+        "name": "BoltHole",
+        "operation": "cut"
+      }
+    },
+    {
+      "command": "solid.pattern.circular",
+      "params": {
+        "axis": "Z",
+        "count": "bolts",
+        "features": [
+          "BoltHole"
+        ]
+      }
+    }
+  ]
+}
