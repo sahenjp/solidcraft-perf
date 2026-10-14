@@ -6,6 +6,19 @@ Sketch, constrain, and build solids with a parametric feature timeline. Change a
 and watch your model rebuild. Run it on your desktop, in your browser, or let AI agents
 model through the built-in MCP server.
 
+---
+
+**This is a personal fork build.** It is upstream SolidCraft 0.10.0 with a smaller release
+profile and the measurement harness in [perf/](perf/README.md). The performance and memory pass
+this fork started with - prism pairs decided before a boolean meshes its operands, a body's size,
+volume and placement measured once, an evaluation cache bounded in bytes, fewer copies in the
+STEP reader - is upstream as of 0.10.0
+([PR #714](https://github.com/bherbruck/solidcraft/pull/714)), and so is the Japanese interface
+(five locales, complete Japanese catalog). Nothing here is planned as a pull request; the app is
+developed upstream at [bherbruck/solidcraft](https://github.com/bherbruck/solidcraft). The
+harness, the numbers it produced on 0.3.2 and the open limitations are in
+[docs/performance-optimization.md](docs/performance-optimization.md).
+
 ![SolidCraft 0.8: model a Raspberry Pi 4 case from an empty design: a sketch dimensioned with parameters, extrude, fillets and shell, a rim rounded in one pick, standoffs patterned on the board's mounting holes, port cut-outs, vent slots, "Pi 4" engraved in a font, a PETG material with its mass in Properties, and a height change in Parameters](docs/screenshots/demo-0.8.gif)
 
 *A Raspberry Pi 4 case from an empty design: a sketch dimensioned with the board's parameters, extrude, fillet, shell, the rim rounded in one pick, an M2.5 standoff patterned on the 58 × 49 mm hole rectangle, port cut-outs, vent slots, "Pi 4" engraved in DejaVu Sans Bold and a PETG material defined in the design, with its mass in Properties, then height 24 → 32 mm in Parameters and it all rebuilds. 9× playback. [Full video](https://github.com/bherbruck/solidcraft/raw/refs/heads/main/docs/screenshots/demo-0.8.mp4), recorded with the [demo script](examples/demo/record_ui.sh).*
