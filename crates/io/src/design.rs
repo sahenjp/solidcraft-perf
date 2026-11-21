@@ -307,11 +307,11 @@ impl<R: Read + Seek> PackageReader<R> {
         let mut total = 0u64;
         for i in 0..zip.len() {
             let part = zip.by_index_raw(i).map_err(invalid)?;
-            let name = part.name();
+            let name = part.name().map_err(invalid)?;
             if name.is_empty()
                 || name.contains('\\')
                 || name.split('/').any(|c| c.is_empty() || c == "." || c == "..")
-                || !names.insert(name.to_owned())
+                || !names.insert(name.into_owned())
             {
                 return Err(invalid("duplicate or invalid archive entry"));
             }
@@ -843,7 +843,7 @@ mod tests {
         (0..zip.len())
             .map(|i| {
                 let mut entry = zip.by_index(i).unwrap();
-                let name = entry.name().to_owned();
+                let name = entry.name().unwrap().into_owned();
                 let mut bytes = Vec::new();
                 entry.read_to_end(&mut bytes).unwrap();
                 (name, bytes)
