@@ -338,7 +338,7 @@ fn bad<T>(msg: impl Into<String>) -> Result<T> {
 fn read_part(zip: &mut zip::ZipArchive<Cursor<&[u8]>>, name: &str) -> Result<Option<Vec<u8>>> {
     let want = name.trim_start_matches('/').to_ascii_lowercase();
     let Some(idx) = (0..zip.len()).find(|i| {
-        zip.name_for_index(*i).and_then(Result::ok).is_some_and(|n| n.replace('\\', "/").trim_start_matches('/').to_ascii_lowercase() == want)
+        zip.name_for_index(*i).and_then(|n| n.ok()).is_some_and(|n| n.replace('\\', "/").trim_start_matches('/').to_ascii_lowercase() == want)
     }) else {
         return Ok(None);
     };
