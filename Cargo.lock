@@ -3350,7 +3350,6 @@ dependencies = [
 name = "solidcraft-gpu"
 version = "0.10.0"
 dependencies = [
- "log",
  "pollster 0.4.0",
  "solidcraft-geom",
  "solidcraft-kernel",
